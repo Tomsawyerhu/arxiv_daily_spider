@@ -1,3 +1,5 @@
+import os.path
+
 from github_tools import *
 from spider import *
 from markdown import *
@@ -9,6 +11,14 @@ if __name__ == '__main__':
     remote_repo = 'EveryDaySeArxiv'
     github_user = 'Tomsawyerhu'
     github_email = '1095549886@qq.com'
+    json_dir = f"{ROOT}/json"
+    markdown_dir = f"{ROOT}/markdown"
+    
+    if not os.path.exists(json_dir):
+        os.mkdir(json_dir)
+        
+    if not os.path.exists(markdown_dir):
+        os.mkdir(markdown_dir)
 
     if not is_git_global_config_exist():
         set_git_global_config(github_user,github_email)
