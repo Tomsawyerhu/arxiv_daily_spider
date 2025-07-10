@@ -1,7 +1,7 @@
 from openai import OpenAI
 
-base_url = "your base_url"
-api_key = "your api_key"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = "sk-e346078d76f546c2ab04f0f008126a91"
 
 
 def make_model():
