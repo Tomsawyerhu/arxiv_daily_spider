@@ -100,58 +100,6 @@ def parse_arxiv_papers():
 
     return that_day, papers
 
-def parse_ssrn_papers():
-    url='https://www.ssrn.com/index.cfm/en/mrn/'
-    # 发送 GET 请求
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        print(f"请求失败，状态码: {response.status_code}")
-        return
-
-    # 解析 HTML
-    soup = BeautifulSoup(response.text, "html.parser")
-    today_str = datetime.today().strftime("%d %b %Y")   # e.g. '10 Jul 2025'
-
-    papers_today = []
-    for info in soup.select("div.paper-info"):
-        # —— 标题 & 下载地址 ——
-        a_tag = info.select_one(".title a")
-        title = a_tag.text.strip() if a_tag else ""
-        url   = a_tag["href"] if a_tag and a_tag.has_attr("href") else ""
-
-        # —— 发布日期 ——（形如 'Posted 10 Jul 2025'）
-        stats = info.select_one(".stats")
-        date_text = ""
-        if stats:
-            m = re.search(r"Posted\s+(\d{1,2}\s+\w{3}\s+\d{4})", stats.text)
-            date_text = m.group(1) if m else ""
-
-        # 只保留今日文章
-        if date_text != today_str:
-            continue
-
-        # —— 发表状态 ——
-        status_tag = info.select_one(".type.status span:nth-of-type(2)")
-        status = status_tag.text.strip() if status_tag else ""
-
-        # —— 作者列表 ——
-        authors = [a.text.strip() for a in info.select(".authors a")]
-
-        # —— 单位 / 机构 ——
-        aff_tag = info.select_one(".affiliations")
-        affiliation = aff_tag.text.strip() if aff_tag else ""
-
-        papers_today.append({
-            "title": title,
-            "date": date_text,
-            "authors": authors,
-            "status": status,
-            "affiliation": affiliation,
-            "download_url": url
-        })
-
-    return papers_today
-
 
 def download_latest_arxiv_papers():
     today = date.today()
